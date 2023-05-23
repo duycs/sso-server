@@ -32,14 +32,14 @@ namespace AuthServer.Infrastructure.Data
 
             var config = builder.Build();
 
-            var connstr = config.GetConnectionString("Default");
+            var connectionString = Environment.GetEnvironmentVariable("CONNECTIONSTRINGS_AUTHSERVER");
 
-            if (string.IsNullOrWhiteSpace(connstr))
+            if (string.IsNullOrWhiteSpace(connectionString))
             {
                 throw new InvalidOperationException(
                     "Could not find a connection string named 'Default'.");
             }
-            return Create(connstr);
+            return Create(connectionString);
         }
 
         private TContext Create(string connectionString)

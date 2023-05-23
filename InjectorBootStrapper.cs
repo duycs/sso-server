@@ -43,6 +43,7 @@ namespace AuthServer
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())
                 .AddInMemoryApiResources(Config.GetApiResources())
                 .AddInMemoryClients(Config.GetClients(configuration))
+                .AddInMemoryApiScopes(Config.GetApiScopes())
                 .AddAspNetIdentity<AppUser>();
 
             services.AddSameSiteCookiePolicy();

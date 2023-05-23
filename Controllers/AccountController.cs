@@ -32,6 +32,7 @@ namespace AuthServer.Controllers
         private readonly SignInManager<AppUser> _signInManager;
         private readonly IStaffClientService _staffClientService;
         private readonly IConfiguration _configuration;
+        private static ConsentResponse Denied = new ConsentResponse();
 
         public AccountController(ILogger<AccountController> logger, UserManager<AppUser> userManager, IIdentityServerInteractionService interaction, SignInManager<AppUser> signInManager,
             IAuthenticationSchemeProvider schemeProvider, IClientStore clientStore, IEventService events,
@@ -88,14 +89,14 @@ namespace AuthServer.Controllers
                         // if the user cancels, send a result back into IdentityServer as if they 
                         // denied the consent (even if this client does not require consent).
                         // this will send back an access denied OIDC error response to the client.
-                        await _interaction.GrantConsentAsync(context, ConsentResponse.Denied);
+                        await _interaction.GrantConsentAsync(context, Denied);
 
                         // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
-                        if (await _clientStore.IsPkceClientAsync(context.ClientId))
+                        if (await _clientStore.IsPkceClientAsync(context?.Client.ClientId))
                         {
                             // if the client is PKCE then we assume it's native, so this change in how to
                             // return the response is for better UX for the end user.
-                            return View("Redirect", new RedirectViewModel { RedirectUrl = model.ReturnUrl });
+                            return View(model.ReturnUrl);
                         }
 
                         return Redirect(model.ReturnUrl);
@@ -115,6 +116,8 @@ namespace AuthServer.Controllers
                     {
                         await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.Name));
 
+                        await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberLogin, false);
+
                         // only set explicit expiration here if user chooses "remember me". 
                         // otherwise we rely upon expiration configured in cookie middleware.
                         AuthenticationProperties props = null;
@@ -127,15 +130,15 @@ namespace AuthServer.Controllers
                             };
                         };
 
-                        await HttpContext.SignInAsync(user.Id, user.UserName, props);
+                        //await HttpContext.SignInAsync(user.Id, user.UserName, props);
 
                         if (context != null)
                         {
-                            if (await _clientStore.IsPkceClientAsync(context.ClientId))
+                            if (await _clientStore.IsPkceClientAsync(context?.Client.ClientId))
                             {
                                 // if the client is PKCE then we assume it's native, so this change in how to
                                 // return the response is for better UX for the end user.
-                                return View("Redirect", new RedirectViewModel { RedirectUrl = model.ReturnUrl });
+                                return View(model.ReturnUrl);
                             }
 
                             // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
@@ -213,7 +216,7 @@ namespace AuthServer.Controllers
                 await _userManager.AddClaimAsync(user, new Claim("account", user.UserName));
                 await _userManager.AddClaimAsync(user, new Claim("name", user.Name));
                 await _userManager.AddClaimAsync(user, new Claim("email", user.Email));
-                await _userManager.AddClaimAsync(user, new Claim("role", Roles.Staff));
+                await _userManager.AddClaimAsync(user, new Claim("role", Roles.Admin));
 
                 // sync create new staff
                 var createStaffVM = new CreateStaffVM { UserId = user.Id, FullName = user.Name, Account = user.UserName, Email = user.Email };
@@ -313,9 +316,9 @@ namespace AuthServer.Controllers
                 }).ToList();
 
             var allowLocal = true;
-            if (context?.ClientId != null)
+            if (context?.Client.ClientId != null)
             {
-                var client = await _clientStore.FindEnabledClientByIdAsync(context.ClientId);
+                var client = await _clientStore.FindEnabledClientByIdAsync(context?.Client.ClientId);
                 if (client != null)
                 {
                     allowLocal = client.EnableLocalLogin;

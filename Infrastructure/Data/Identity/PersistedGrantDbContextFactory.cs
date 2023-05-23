@@ -14,9 +14,8 @@ namespace AuthServer.Infrastructure.Data.Identity
         public PersistedGrantDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<PersistedGrantDbContext>();
-            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-            var config = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile($"appsettings.{env}.json").Build();
-            optionsBuilder.UseMySQL(config.GetConnectionString("Default"),
+            var connectionString = Environment.GetEnvironmentVariable("CONNECTIONSTRINGS_AUTHSERVER");
+            optionsBuilder.UseMySQL(connectionString,
                 sql => sql.MigrationsAssembly(typeof(PersistedGrantDbContextFactory).GetTypeInfo().Assembly.GetName().Name));
             return new PersistedGrantDbContext(optionsBuilder.Options, new OperationalStoreOptions());
         }

@@ -16,13 +16,24 @@ namespace AuthServer
             };
         }
 
+        public static IEnumerable<ApiScope> GetApiScopes()
+        {
+            return new List<ApiScope>
+            {
+                new ApiScope(
+                    name: "api.read", 
+                    displayName: "api read", 
+                    userClaims: new[] { "api.read" })
+            };
+        }
+
         public static IEnumerable<ApiResource> GetApiResources()
         {
             return new List<ApiResource>
             {
                 new ApiResource("we-edit-api", "We Edit API")
                 {
-                    Scopes = {new Scope("api.read")}
+                    Scopes = {"api.read"}
                 }
             };
         }
@@ -36,6 +47,7 @@ namespace AuthServer
             {
                 new Client {
                     RequireConsent = false,
+                    RequirePkce = false,
                     ClientId = "we-edit-web-app",
                     ClientName = "We Edit Web App",
                     AllowedGrantTypes = GrantTypes.Implicit,
