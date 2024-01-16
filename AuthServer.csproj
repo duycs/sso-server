@@ -34,7 +34,7 @@
 		</PackageReference>
 		<PackageReference Include="MySql.Data" Version="8.0.31" />
 		<PackageReference Include="MySql.EntityFrameworkCore" Version="6.0.7" />
-		<PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
+		<PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
 	</ItemGroup>
 
 
