@@ -9,7 +9,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/bin/Debug/netcoreapp2.2/AuthServer.dll",
+            "program": "${workspaceFolder}/bin/Debug/net6.0/AuthServer.dll",
             "args": [],
             "cwd": "${workspaceFolder}",
             "stopAtEntry": false,
@@ -18,7 +18,8 @@
                 "pattern": "^\\s*Now listening on:\\s+(https?://\\S+)"
             },
             "env": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "CONNECTIONSTRINGS_AUTHSERVER": "Server=localhost;port=3306;Database=Identity;user=root;password=;CharSet=utf8;Allow User Variables=True"
             },
             "sourceFileMap": {
                 "/Views": "${workspaceFolder}/Views"

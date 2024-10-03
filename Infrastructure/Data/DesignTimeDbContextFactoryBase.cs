@@ -32,7 +32,9 @@ namespace AuthServer.Infrastructure.Data
 
             var config = builder.Build();
 
-            var connstr = config.GetConnectionString("Default");
+            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            var connstr = Environment.GetEnvironmentVariable("CONNECTIONSTRINGS_AUTHSERVER");
+            //var connstr = config.GetConnectionString("Default");
 
             if (string.IsNullOrWhiteSpace(connstr))
             {

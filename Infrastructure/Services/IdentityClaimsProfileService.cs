@@ -31,7 +31,7 @@ namespace AuthServer.Infrastructure.Services
             var principal = await _claimsFactory.CreateAsync(user);
 
             var claims = principal.Claims.ToList();
-            claims = claims.Where(claim => context.RequestedClaimTypes.Contains(claim.Type)).ToList();
+            //claims = claims.Where(claim => context.RequestedClaimTypes.Contains(claim.Type)).ToList();
             claims.AddRange(GetClaims(user).Result);
 
             context.IssuedClaims = claims;
@@ -55,6 +55,7 @@ namespace AuthServer.Infrastructure.Services
             };
 
             var roles = await _userManager.GetRolesAsync(user);
+
             if (roles != null && roles.Any())
             {
                 foreach (var role in roles)

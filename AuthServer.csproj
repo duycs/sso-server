@@ -7,9 +7,9 @@
 
 
 	<ItemGroup>
-		<PackageReference Include="Identityserver4.Entityframework" Version="2.3.2" />
-		<PackageReference Include="IdentityServer4" Version="2.4.0" />
-		<PackageReference Include="IdentityServer4.AspNetIdentity" Version="2.4.0" />
+		<PackageReference Include="Identityserver4.Entityframework" Version="3.0.0" />
+		<PackageReference Include="IdentityServer4" Version="3.0.0" />
+		<PackageReference Include="IdentityServer4.AspNetIdentity" Version="3.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.7" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.2" />
 		<PackageReference Include="Microsoft.Identity.Web" Version="1.25.10" />
